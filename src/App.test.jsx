@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { expect } from "vitest";
 import App from "./App";
 
 it("renders the number of completed todos (90 at initial load) in the heading", async () => {
@@ -13,7 +12,7 @@ it("renders the number of completed todos (90 at initial load) in the heading", 
   expect(heading).toHaveTextContent("90 / 200 Completed");
 });
 
-it("renders the number of completed todos (91 after one todo is checked) in the heading", () => {
+it("renders the number of completed todos (91 after one todo is checked) in the heading", async () => {
   const user = userEvent.setup();
   render(<App />);
 
@@ -21,4 +20,10 @@ it("renders the number of completed todos (91 after one todo is checked) in the 
   // Hint: use userEvent.click() to check a todo
   // Hint: use screen.getByRole("heading") to get the heading
   // Hint: use expect().toHaveTextContent() to check the heading text
+
+  const checkbox = await screen.findAllByRole("checkbox");
+  const filter = checkbox.filter((input) => input.checked === false);
+  await user.click(filter[0]);
+  const heading = screen.getByRole("heading");
+  expect(heading).toHaveTextContent("91 / 200 Completed");
 });
